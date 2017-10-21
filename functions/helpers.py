@@ -34,6 +34,6 @@ def fields_(products):
     return products
 
 def error_(msg, status):
-    data = jsonify({"messge":msg})
+    data = jsonify({"message":msg})
     data.response_status = status
     return data
