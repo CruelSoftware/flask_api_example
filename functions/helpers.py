@@ -1,5 +1,5 @@
 from flask import request
-
+from flask import jsonify
 
 def search_(products):
     query = request.args.get('q')
@@ -32,3 +32,8 @@ def fields_(products):
         products = [{k: v for k, v in p.items() if k in fields}
                     for p in products]
     return products
+
+def error_(msg, status):
+    data = jsonify({"messge":msg})
+    data.response_status = status
+    return data

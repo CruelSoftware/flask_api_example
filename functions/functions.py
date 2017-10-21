@@ -1,7 +1,7 @@
 import json
 from json import JSONDecodeError
 
-from .helpers import search_, filter_, from_to_, fields_
+from .helpers import search_, filter_, from_to_, fields_, error_
 from flask import jsonify
 
 
@@ -13,24 +13,18 @@ def get(products: list):
         products = fields_(products)
         return jsonify(products)
     except ValueError:
-        products = jsonify({"msg": "parameter value error"})
-        products.status_code = 400
-        return products
+        return error_("parameter value error", 400)
 
 
 def post(products: list, request, schema):
     try:
         raw_product = json.loads(request.data.decode('utf-8'))
     except JSONDecodeError as e:
-        raw_product = jsonify({"msg": str(e)})
-        raw_product.status_code = 400
-        return raw_product
+        return error_(str(e), 400)
 
     clean_product, errors = schema.load(raw_product)
     if errors:
-        response = jsonify(errors)
-        response.status_code = 400
-        return response
+        return error_(errors, 400)
 
     products.append(clean_product)
     return jsonify(raw_product)
